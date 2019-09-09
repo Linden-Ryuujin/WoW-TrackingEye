@@ -49,6 +49,8 @@ function TrackingEye:OnInitialize()
 	LDBIcon:Register("TrackingEyeData", LDB, self.db.profile.minimap)
 	LDBIcon:GetMinimapButton("TrackingEyeData"):SetScale(1.13)
 
+	LDB.icon = GetTrackingTexture()
+
 	self:RegisterChatCommand("te", "MinimapButton_ToggleLock")
 	self:RegisterEvent("MINIMAP_UPDATE_TRACKING", "TrackingIcon_Updated")
 end
