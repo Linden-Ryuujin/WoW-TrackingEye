@@ -90,32 +90,34 @@ function TrackingEye:Menu_Open()
 		}
 	}
 
-	-- In level order, with racial/proffession when lost
+	-- In level order, with racial/professions last
 	local spells =
 	{
-		"Track Beasts",
-		"Track Humanoids",
-		"Track Undead",
-		"Track Hidden",
-		"Track Elementals",
-		"Track Demons",
-		"Track Giants",
-		"Track Dragonkin",
-		"Sense Demons",
-		"Sense Undead",
-		"Find Herbs",
-		"Find Minerals",
-		"Find Treasure",
+		1494,	--Track Beasts
+		19883,	--Track Humanoids
+		19884,	--Track Undead
+		19885,	--Track Hidden
+		19880,	--Track Elementals
+		19878,	--Track Demons
+		19882,	--Track Giants
+		19879,	--Track Dragonkin
+		5225,	--Track Humanoids: Druid
+		5500,	--Sense Demons
+		5502,	--Sense Undead
+		2383,	--Find Herbs
+		2580,	--Find Minerals
+		2481	--Find Treasure
 	}
 
-	for key,spellName in ipairs(spells) do
-		if GetSpellInfo(spellName) ~= nil then
+	for key,spellId in ipairs(spells) do
+		spellName = GetSpellInfo(spellId)
+		if IsPlayerSpell(spellId) then
 			table.insert(menu,
 			{
 				text = spellName,
-				icon = GetSpellTexture(spellName),
+				icon = GetSpellTexture(spellId),
 				func = function()
-					CastSpellByName(spellName)
+					CastSpellByID(spellId)
 				end
 			})
 		end
