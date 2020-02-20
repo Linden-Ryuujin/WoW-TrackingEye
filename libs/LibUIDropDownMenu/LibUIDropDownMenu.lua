@@ -182,6 +182,17 @@ local function create_UIDropDownMenuButton(name, parent)
 	end)
 	f.invisibleButton = fib
 
+	-- SecureButton
+	local sec = CreateFrame("Button", name.."SecureButton", f, "SecureActionButtonTemplate");
+	sec:Hide()
+	sec:SetPoint("TOPLEFT", f, "TOPLEFT")
+	sec:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT")
+	sec:SetHighlightTexture("Interface/QuestFrame/UI-QuestTitleHighlight")
+	sec:SetScript("PostClick", function(self, button, down)
+		L_UIDropDownMenuButton_OnClick(f, button, down)
+	end)
+	f.secureButton = sec
+
 	-- UIDropDownMenuButton Scripts
 	f:SetScript("OnClick", function(self, button, down)
 		L_UIDropDownMenuButton_OnClick(self, button, down)
@@ -838,6 +849,13 @@ function L_UIDropDownMenu_AddButton(info, level)
 	button.padding = info.padding;
 	button.icon = info.icon;
 	button.mouseOverIcon = info.mouseOverIcon;
+
+	if (info.attributes) then
+		for key, value in pairs(info.attributes) do
+			button.secureButton:SetAttribute(key, value)
+			button.secureButton:Show()
+		end
+	end
 
 	if ( info.value ) then
 		button.value = info.value;
