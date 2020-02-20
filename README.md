@@ -1,7 +1,9 @@
 # WoW-TrackingEye
 World of Warcraft Classic Tracking Plugin
 
-Replaces the minimap tracking icon with a button that can be used to switch the current tracking type. Clicking the button will display a context menu with all tracking options avaiable to the current character. Right clicking the button will cancel tracking.
+Replaces the minimap tracking icon with a button that can be used to switch the current tracking type. Clicking the button will display a context menu with all tracking options available to the current character. Right clicking the button will cancel tracking.
+
+Also adds a target selection menu to minimap blips. Right clicking a blip will offer a menu to allow you to select a target by name and target them.
 
 Supports:
 * Track Beasts
