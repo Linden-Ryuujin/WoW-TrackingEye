@@ -17,7 +17,7 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("TrackingEyeData",
 	icon = "",
 	OnClick = function(_, msg)
 		if msg == "LeftButton" then
-			TrackingEye:Menu_Open();
+			TrackingEye:TrackingMenu_Open();
 		elseif msg == "RightButton" then
 			CancelTrackingBuff();
 		end
@@ -51,8 +51,17 @@ function TrackingEye:OnInitialize()
 
 	LDB.icon = GetTrackingTexture()
 
-	self:RegisterChatCommand("te", "MinimapButton_ToggleLock")
+	self:RegisterChatCommand("te", "MinimapButton_ChatCommand")
 	self:RegisterEvent("MINIMAP_UPDATE_TRACKING", "TrackingIcon_Updated")
+
+	local Minimap_OnMouseUp = Minimap:GetScript("OnMouseUp");
+	Minimap:SetScript("OnMouseUp", function( self, button )
+		if (button == "RightButton") then
+			TrackingEye:TargetMenu_Open()
+		else
+			Minimap_OnMouseUp(self, button)
+		end
+	end)
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -67,22 +76,36 @@ end
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Lock and unlock the Tracking Eye minimap button position.
 ------------------------------------------------------------------------------------------------------------------------------------------------------
+function TrackingEye:MinimapButton_ChatCommand(input)
+	if not input or input:trim() == "" then
+		TrackingEye:MinimapButton_ToggleLock()
+	else
+		LibStub("AceConfigCmd-3.0").HandleCommand(TrackingEye, "te", "TrackingEye", input)
+	end
+end
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Lock and unlock the Tracking Eye minimap button position.
+------------------------------------------------------------------------------------------------------------------------------------------------------
 function TrackingEye:MinimapButton_ToggleLock()
 	self.db.profile.minimap.lock = not self.db.profile.minimap.lock
 
 	if self.db.profile.minimap.lock then
 		LDBIcon:Lock("TrackingEyeData")
+		print("Tracking Eye minimap button locked.")
 	else
 		LDBIcon:Unlock("TrackingEyeData")
+		print("Tracking Eye minimap button unlocked.")
 	end
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
--- Create the display the Tracking Eye context menu.
----
---- Will check what spells are known and populate the menu with all usable tracking types.
+-- Create the Tracking Eye tracking context menu.
+--
+-- Will check what spells are known and populate the menu with all usable tracking types.
 ------------------------------------------------------------------------------------------------------------------------------------------------------
-function TrackingEye:Menu_Open()
+function TrackingEye:TrackingMenu_Open()
 	local menu =
 	{
 		{
@@ -123,6 +146,57 @@ function TrackingEye:Menu_Open()
 		end
 	end
 
-	local menuFrame = CreateFrame("Frame", "ExampleMenuFrame", UIParent, "UIDropDownMenuTemplate")
+	local menuFrame = CreateFrame("Frame", "TrackingEyeTrackingMenu", UIParent, "UIDropDownMenuTemplate")
 	EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the Tracking Eye target context menu.
+--
+-- Will search for a context menu and then convert it targeting menu.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+function TrackingEye:TargetMenu_Open()
+	local targets = GameTooltipTextLeft1:GetText();
+
+	if (targets == nil or targets == '') then
+		return
+	end
+
+	local lines = split(targets, "\n")
+
+	local menu =
+	{
+		{
+			text = "Select Target", isTitle = true
+		}
+	}
+
+	for i, line in ipairs(lines) do
+		table.insert(menu,
+		{
+			attributes =
+			{
+				type = "macro",
+				macrotext = "/target " .. line
+			},
+			text = line
+		})
+	end
+
+	-- I have added some custom code to LibUIDropDownMenu that handle an "attributes" entry using secure buttons for macro support.
+	local menuFrame = L_Create_UIDropDownMenu("TrackingEyeTargetMenu", UIParent)
+	L_EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the Tracking Eye target context menu.
+--
+-- Will search for a context menu and then convert it targeting menu.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+function split(str, delimiter)
+	local result = {};
+	for match in (str..delimiter):gmatch("(.-)"..delimiter) do
+		table.insert(result, match);
+	end
+	return result;
 end
