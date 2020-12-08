@@ -156,6 +156,11 @@ end
 -- Will search for a context menu and then convert it to a targeting menu.
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 function TrackingEye:TargetMenu_Open()
+	if UnitAffectingCombat('player') then
+		print("|c00ff0000Tracking eye menu can't be used in combat.")
+		return
+	end
+
 	local targets = GameTooltipTextLeft1:GetText();
 
 	if (targets == nil or targets == '') then
