@@ -74,7 +74,7 @@ function TrackingEye.TrackingIcon_Updated()
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
--- Lock and unlock the Tracking Eye minimap button position.
+-- Lock and unlock the Tracking Eye button position by Chat command.
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 function TrackingEye:MinimapButton_ChatCommand(input)
 	if not input or input:trim() == "" then
@@ -153,9 +153,14 @@ end
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the Tracking Eye target context menu.
 --
--- Will search for a context menu and then convert it targeting menu.
+-- Will search for a context menu and then convert it to a targeting menu.
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 function TrackingEye:TargetMenu_Open()
+	if UnitAffectingCombat('player') then
+		print("|c00ff0000Tracking eye menu can't be used in combat.")
+		return
+	end
+
 	local targets = GameTooltipTextLeft1:GetText();
 
 	if (targets == nil or targets == '') then
@@ -177,7 +182,7 @@ function TrackingEye:TargetMenu_Open()
 			attributes =
 			{
 				type = "macro",
-				macrotext = "/target " .. line
+				macrotext = "/target " .. stripColour(line)
 			},
 			text = line
 		})
@@ -189,9 +194,7 @@ function TrackingEye:TargetMenu_Open()
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
--- Create the Tracking Eye target context menu.
---
--- Will search for a context menu and then convert it targeting menu.
+-- Split the passed string into a table using the passed delimiter to mark the end of each item.
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 function split(str, delimiter)
 	local result = {};
@@ -199,4 +202,13 @@ function split(str, delimiter)
 		table.insert(result, match);
 	end
 	return result;
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Remove colour markers from a string
+------------------------------------------------------------------------------------------------------------------------------------------------------
+function stripColour(str)
+	stripped, count  = str:gsub("|c[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]", "")
+	stripped, count  = stripped:gsub("|r", "")
+	return stripped
 end
