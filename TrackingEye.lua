@@ -40,14 +40,34 @@ function TrackingEye:OnInitialize()
 				hide = false,
 				minimapPos = 142,
 				lock = true,
+				scale = 1.13
 			},
 		},
 	})
 
+	options =
+	{
+		type = "group",
+		args =
+		{
+			scale =
+			{
+				name = "Scale",
+				desc = "Changes the scale of the tracking frame.",
+				type = "input",
+				set = function(info,val) TrackingEye:MinimapButton_SetScale(val) end,
+				get = function(info) return "" .. LDBIcon:GetMinimapButton("TrackingEyeData"):GetScale() end,
+				pattern = "%d",
+				usage = "Invalid Input - Must be set to a number. The default value is 1.13"
+			},
+		}
+	}
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("TrackingEye", options, {"te", "TrackingEye"})
+
 	MiniMapTrackingFrame:SetScale(0.001) --hide frame permanently by making it tiny
 
 	LDBIcon:Register("TrackingEyeData", LDB, self.db.profile.minimap)
-	LDBIcon:GetMinimapButton("TrackingEyeData"):SetScale(1.13)
+	LDBIcon:GetMinimapButton("TrackingEyeData"):SetScale(self.db.profile.minimap.scale)
 
 	LDB.icon = GetTrackingTexture()
 
@@ -98,6 +118,15 @@ function TrackingEye:MinimapButton_ToggleLock()
 		LDBIcon:Unlock("TrackingEyeData")
 		print("Tracking Eye minimap button unlocked.")
 	end
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Scale the Tracking Eye minimap button position.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+function TrackingEye:MinimapButton_SetScale(scale)
+	self.db.profile.minimap.scale = scale
+	LDBIcon:GetMinimapButton("TrackingEyeData"):SetScale(scale)
+	print("Tracking Eye minimap button scale set to: " .. scale)
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
