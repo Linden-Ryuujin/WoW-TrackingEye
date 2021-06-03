@@ -335,6 +335,17 @@ local function create_MenuButton(name, parent)
 		self.invisibleButton:Show()
 	end)
 
+	-- SecureButton
+	local sec = CreateFrame("Button", name.."SecureButton", f, "SecureActionButtonTemplate");
+	sec:Hide()
+	sec:SetPoint("TOPLEFT", f, "TOPLEFT")
+	sec:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT")
+	sec:SetHighlightTexture("Interface/QuestFrame/UI-QuestTitleHighlight")
+	sec:SetScript("PostClick", function(self, button, down)
+		button_OnClick(f, button, down)
+	end)
+	f.secureButton = sec
+
 	local text1 = f:CreateFontString(name.."NormalText")
 	f:SetFontString(text1)
 	text1:SetPoint("LEFT", f, -5, 0)
@@ -926,6 +937,13 @@ function lib:UIDropDownMenu_AddButton(info, level)
 	button.icon = info.icon;
 	button.mouseOverIcon = info.mouseOverIcon;
 	button.ignoreAsMenuSelection = info.ignoreAsMenuSelection;
+
+	if (info.attributes) then
+		for key, value in pairs(info.attributes) do
+			button.secureButton:SetAttribute(key, value)
+			button.secureButton:Show()
+		end
+	end
 
 	if ( info.value ) then
 		button.value = info.value;
