@@ -1,4 +1,4 @@
-## Interface: 11307
+## Interface: 20501
 ## Title: Tracking Eye
 ## Author: Linden Ryuujin
 ## Version: 2.0.1
