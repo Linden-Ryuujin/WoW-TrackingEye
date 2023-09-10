@@ -8,6 +8,7 @@
 --====================================================================================================================================================
 
 local TrackingEye = LibStub("AceAddon-3.0"):NewAddon("TrackingEye", "AceConsole-3.0", "AceEvent-3.0")
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 -- Setup minimap button
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("TrackingEyeData",
@@ -218,8 +219,8 @@ function TrackingEye:TargetMenu_Open()
 	end
 
 	-- I have added some custom code to LibUIDropDownMenu that handle an "attributes" entry using secure buttons for macro support.
-	local menuFrame = L_Create_UIDropDownMenu("TrackingEyeTargetMenu", UIParent)
-	L_EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
+	local menuFrame = LibDD:Create_UIDropDownMenu("TrackingEyeTargetMenu", UIParent)
+	LibDD:EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
